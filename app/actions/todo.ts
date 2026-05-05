@@ -20,3 +20,23 @@ export async function createTodo(formData: FormData) {
 
   revalidatePath("/");
 }
+
+export async function updateTodo(formData: FormData) {
+  const id = Number(formData.get("id"));
+  const title = formData.get("title")?.toString().trim();
+  const desc = formData.get("desc")?.toString().trim();
+
+  if (!id || !title) {
+    throw new Error("Données invalides");
+  }
+
+  await prisma.todo.update({
+    where: { id },
+    data: {
+      title,
+      desc: desc || "",
+    },
+  });
+
+  revalidatePath("/");
+}
